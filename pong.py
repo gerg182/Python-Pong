@@ -1,4 +1,5 @@
 import pygame
+import random
 
 pygame.init()
 
@@ -40,9 +41,17 @@ class ball:
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.radius = radius
+        self.x_list = [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5]
+        self.y_list = [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5]
+        self.x_pick = random.choice(self.x_list)
+        self.y_pick = random.choice(self.y_list)
 
     def spawn(self):
         pygame.draw.circle(display_surf, white, (self.pos_x, self.pos_y), self.radius)
+        
+    def move(self):
+        self.pos_x += self.x_pick
+        self.pos_y += self.y_pick
 
 paddle_game = paddle(1,200,1,400,pygame.K_w,pygame.K_s)
 paddle_game_2 = paddle(798,200,798,400,pygame.K_UP,pygame.K_DOWN)
@@ -55,6 +64,8 @@ while running:
             running = False
 
     keys = pygame.key.get_pressed()
+
+    ball_game.move()
 
     paddle_game.move(keys,paddle_speed)
     paddle_game_2.move(keys,paddle_speed)
