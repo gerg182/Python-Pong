@@ -7,7 +7,7 @@ DISPLAY_WIDTH = 800
 DISPLAY_HEIGHT = 600
 display_surf = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
 display_surf.fill((0,0,0))
-pygame.display.set_caption("My PyGame Window")
+pygame.display.set_caption("Pong snake")
 
 #Colors
 white = (255, 255, 255)
@@ -19,7 +19,7 @@ clock = pygame.time.Clock()
 Lost = False
 Lost_player1 = False
 Lost_player2 = False
-player_score = 0
+muti = 1
 
 class paddle:
     def __init__(self, pos_x, pos_y, pos_x_end, pos_y_end, up_key, down_key):
@@ -45,8 +45,8 @@ class ball:
     def __init__(self, pos_x, pos_y):
         self.pos_x = pos_x
         self.pos_y = pos_y
-        self.x_list = [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5]
-        self.y_list = [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5]
+        self.x_list = [-1, 1]
+        self.y_list = [-1, 1]
         self.x_pick = random.choice(self.x_list)
         self.y_pick = random.choice(self.y_list)
 
@@ -54,20 +54,23 @@ class ball:
         pygame.draw.rect(display_surf, white, (self.pos_x, self.pos_y, 5, 5))
 
     def move(self):
-        self.pos_x += self.x_pick * 1.5
-        self.pos_y += self.y_pick * 1.5
+        self.pos_x += self.x_pick * muti
+        self.pos_y += self.y_pick * muti
 
     def bounce(self):
         global Lost_player1
         global Lost_player2
         global Lost
+        global muti
         if self.pos_y <= 0 or self.pos_y >= DISPLAY_HEIGHT:
             self.y_pick = self.y_pick * -1
         
         if (self.pos_x <= paddle_game.pos_x + 5 and paddle_game.pos_y < self.pos_y < paddle_game.pos_y_end):
             self.x_pick = self.x_pick * -1
+            muti += 1
         elif (self.pos_x >= paddle_game_2.pos_x - 5 and paddle_game_2.pos_y < self.pos_y < paddle_game_2.pos_y_end):
             self.x_pick = self.x_pick * -1
+            muti += 1
         elif self.pos_x <= 0:
             Lost_player1 = True
             Lost = True
@@ -80,13 +83,14 @@ paddle_game_2 = paddle(790,200,790,400,pygame.K_UP,pygame.K_DOWN)
 ball_game = ball(400, 300)
 
 def new_game():
-    global Lost, Lost_player2, Lost_player1, paddle_game_2, paddle_game, ball_game
+    global Lost, Lost_player2, Lost_player1, paddle_game_2, paddle_game, ball_game, muti
     paddle_game_2 = paddle(790,200,790,400,pygame.K_UP,pygame.K_DOWN)
     paddle_game = paddle(10,200,10,400,pygame.K_w,pygame.K_s)
     ball_game = ball(400, 300)
     Lost = False
     Lost_player1 = False
     Lost_player2 = False
+    muti = 0
 
 running = True
 while running:
@@ -96,11 +100,12 @@ while running:
 
     keys = pygame.key.get_pressed()
 
-    ball_game.move()
-    ball_game.bounce()
+    if Lost != True:
+        ball_game.move()
+        ball_game.bounce()
 
-    paddle_game.move(keys,paddle_speed)
-    paddle_game_2.move(keys,paddle_speed)
+        paddle_game.move(keys,paddle_speed)
+        paddle_game_2.move(keys,paddle_speed)
 
     display_surf.fill(black)
     paddle_game.draw()
