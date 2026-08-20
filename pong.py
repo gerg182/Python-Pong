@@ -42,17 +42,16 @@ class paddle:
         pygame.draw.line(display_surf, white, (self.pos_x, self.pos_y), (self.pos_x_end, self.pos_y_end), 5)
 
 class ball:
-    def __init__(self, pos_x, pos_y, radius):
+    def __init__(self, pos_x, pos_y):
         self.pos_x = pos_x
         self.pos_y = pos_y
-        self.radius = radius
         self.x_list = [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5]
         self.y_list = [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5]
         self.x_pick = random.choice(self.x_list)
         self.y_pick = random.choice(self.y_list)
 
     def spawn(self):
-        pygame.draw.rect(display_surf, white, (self.pos_y, self.pos_x, 5, 5))
+        pygame.draw.rect(display_surf, white, (self.pos_x, self.pos_y, 5, 5))
 
     def move(self):
         self.pos_x += self.x_pick * 1.5
@@ -62,19 +61,32 @@ class ball:
         global Lost_player1
         global Lost_player2
         global Lost
-        if self.pos_x <= 0 or self.pos_x >= DISPLAY_HEIGHT:
-            self.x_pick = self.x_pick * -1
+        if self.pos_y <= 0 or self.pos_y >= DISPLAY_HEIGHT:
+            self.y_pick = self.y_pick * -1
         
-        if self.pos_y <= 0:
+        if (self.pos_x <= paddle_game.pos_x + 5 and paddle_game.pos_y < self.pos_y < paddle_game.pos_y_end):
+            self.x_pick = self.x_pick * -1
+        elif (self.pos_x >= paddle_game_2.pos_x - 5 and paddle_game_2.pos_y < self.pos_y < paddle_game_2.pos_y_end):
+            self.x_pick = self.x_pick * -1
+        elif self.pos_x <= 0:
             Lost_player1 = True
             Lost = True
-        elif self.pos_y >= DISPLAY_WIDTH:
+        elif self.pos_x >= DISPLAY_WIDTH:
             Lost_player2 = True
             Lost = True
 
-paddle_game = paddle(1,200,1,400,pygame.K_w,pygame.K_s)
-paddle_game_2 = paddle(798,200,798,400,pygame.K_UP,pygame.K_DOWN)
-ball_game = ball(300, 400, 5)
+paddle_game = paddle(10,200,10,400,pygame.K_w,pygame.K_s)
+paddle_game_2 = paddle(790,200,790,400,pygame.K_UP,pygame.K_DOWN)
+ball_game = ball(400, 300)
+
+def new_game():
+    global Lost, Lost_player2, Lost_player1, paddle_game_2, paddle_game, ball_game
+    paddle_game_2 = paddle(790,200,790,400,pygame.K_UP,pygame.K_DOWN)
+    paddle_game = paddle(10,200,10,400,pygame.K_w,pygame.K_s)
+    ball_game = ball(400, 300)
+    Lost = False
+    Lost_player1 = False
+    Lost_player2 = False
 
 running = True
 while running:
