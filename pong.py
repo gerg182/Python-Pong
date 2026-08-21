@@ -66,35 +66,36 @@ class ball:
             self.y_pick = self.y_pick * -1
         
         if (self.pos_x <= paddle_game.pos_x + 5 and paddle_game.pos_y < self.pos_y < paddle_game.pos_y_end):
+
+            self.x_pick = self.x_pick * -1
+
             if keys[paddle_game.up_key]:
                 muti += 1
-                self.x_pick + 100
-                self.x_pick = self.x_pick * -1
+                self.y_pick = -abs(self.x_pick)
             elif keys[paddle_game.down_key]:
                 muti += 1
-                self.x_pick + 100
-                self.x_pick = self.x_pick * -1
+                self.y_pick = abs(self.x_pick)
             else:
                 if muti > 1:
                     muti -= 1
-                    self.x_pick = self.x_pick * -1
-                else:
-                    self.x_pick = self.x_pick * -1
+            if self.y_pick >= 0:
+                self.y_pick = 0.4                 
         if (self.pos_x >= paddle_game_2.pos_x - 5 and paddle_game_2.pos_y < self.pos_y < paddle_game_2.pos_y_end):
+
+            self.x_pick = self.x_pick * -1
+
             if keys[paddle_game_2.up_key]:
                 muti += 1
-                self.x_pick + 100
-                self.x_pick = self.x_pick * -1
+                self.y_pick = -abs(self.x_pick)
             elif keys[paddle_game_2.down_key]:
                 muti += 1
-                self.x_pick + 100
-                self.x_pick = self.x_pick * -1
+                self.y_pick = abs(self.x_pick)
             else:
                 if muti > 1:
                     muti -= 1
-                    self.x_pick = self.x_pick * -1
-                else:
-                    self.x_pick = self.x_pick * -1
+            if self.y_pick >= 0:
+                self.y_pick = 0.4
+
         elif self.pos_x <= 0:
             Lost_player1 = True
             Lost = True
