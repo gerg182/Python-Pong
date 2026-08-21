@@ -7,7 +7,7 @@ DISPLAY_WIDTH = 800
 DISPLAY_HEIGHT = 600
 display_surf = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
 display_surf.fill((0,0,0))
-pygame.display.set_caption("Pong snake")
+pygame.display.set_caption("Pong")
 
 #Colors
 white = (255, 255, 255)
@@ -45,8 +45,8 @@ class ball:
     def __init__(self, pos_x, pos_y):
         self.pos_x = pos_x
         self.pos_y = pos_y
-        self.x_list = [-1, 1]
-        self.y_list = [-1, 1]
+        self.x_list = [-1, -0.5, 0.5, 1]
+        self.y_list = [-1, -0.5, 0.5, 1]
         self.x_pick = random.choice(self.x_list)
         self.y_pick = random.choice(self.y_list)
 
@@ -57,7 +57,7 @@ class ball:
         self.pos_x += self.x_pick * muti
         self.pos_y += self.y_pick * muti
 
-    def bounce(self):
+    def bounce(self,keys):
         global Lost_player1
         global Lost_player2
         global Lost
@@ -66,11 +66,35 @@ class ball:
             self.y_pick = self.y_pick * -1
         
         if (self.pos_x <= paddle_game.pos_x + 5 and paddle_game.pos_y < self.pos_y < paddle_game.pos_y_end):
-            self.x_pick = self.x_pick * -1
-            muti += 1
-        elif (self.pos_x >= paddle_game_2.pos_x - 5 and paddle_game_2.pos_y < self.pos_y < paddle_game_2.pos_y_end):
-            self.x_pick = self.x_pick * -1
-            muti += 1
+            if keys[paddle_game.up_key]:
+                muti += 1
+                self.x_pick + 100
+                self.x_pick = self.x_pick * -1
+            elif keys[paddle_game.down_key]:
+                muti += 1
+                self.x_pick + 100
+                self.x_pick = self.x_pick * -1
+            else:
+                if muti > 1:
+                    muti -= 1
+                    self.x_pick = self.x_pick * -1
+                else:
+                    self.x_pick = self.x_pick * -1
+        if (self.pos_x >= paddle_game_2.pos_x - 5 and paddle_game_2.pos_y < self.pos_y < paddle_game_2.pos_y_end):
+            if keys[paddle_game_2.up_key]:
+                muti += 1
+                self.x_pick + 100
+                self.x_pick = self.x_pick * -1
+            elif keys[paddle_game_2.down_key]:
+                muti += 1
+                self.x_pick + 100
+                self.x_pick = self.x_pick * -1
+            else:
+                if muti > 1:
+                    muti -= 1
+                    self.x_pick = self.x_pick * -1
+                else:
+                    self.x_pick = self.x_pick * -1
         elif self.pos_x <= 0:
             Lost_player1 = True
             Lost = True
@@ -90,7 +114,7 @@ def new_game():
     Lost = False
     Lost_player1 = False
     Lost_player2 = False
-    muti = 0
+    muti = 1
 
 running = True
 while running:
@@ -102,7 +126,7 @@ while running:
 
     if Lost != True:
         ball_game.move()
-        ball_game.bounce()
+        ball_game.bounce(keys)
 
         paddle_game.move(keys,paddle_speed)
         paddle_game_2.move(keys,paddle_speed)
@@ -112,6 +136,8 @@ while running:
     paddle_game_2.draw()
     ball_game.spawn()
 
+    pygame.display.set_caption(f"Pong Ballspeed: {muti}")
+    
     if Lost == True:
         overlay = pygame.Surface((display_surf.get_width(), display_surf.get_height()))
         overlay.set_alpha(180)
@@ -131,4 +157,4 @@ while running:
     pygame.display.flip()
     clock.tick(60)
 
-pygame.quit
+pygame.quit()
